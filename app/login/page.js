@@ -1,10 +1,10 @@
-"use client"
+"use client";
 import React from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 const Login = () => {
-  const { data: session } = useSession();
+  const { data: session,status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -14,6 +14,11 @@ const Login = () => {
       router.push("/home");
     }
   }, [router, session]);
+  if (status === "loading") {
+    return <div className="text-white text-center mt-10">Loading...</div>; // ⏳ Prevent flashing login page
+  }
+
+  if (session) return null;
   return (
     <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]">
       <main className="">

@@ -98,7 +98,7 @@ const Timetable = () => {
       <main className="text-white" >
         <div className="grid grid-cols-10">
           {/* Draggable Events */}
-          <div id="draggable-events" className="col-span-1">
+          {/* <div id="draggable-events" className="col-span-1">
             <h1 className="text-lg font-bold text-center">Drag event</h1>
             {events.map((event) => (
               <div
@@ -111,11 +111,11 @@ const Timetable = () => {
                 {event.title}
               </div>
             ))}
-          </div>
+          </div> */}
           {/* Timegrid */}
-          <div className="col-span-9 ">
+          <div className="col-span-10">
             <FullCalendar
-              height={"70vh"}
+              height={"75vh"}
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
               headerToolbar={{
                 left: "prev,next today",

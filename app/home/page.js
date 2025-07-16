@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Timetable from "@/components/Timetable";
+import Timetable from "@/app/timetable/Timetable";
 const Page = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -46,11 +46,12 @@ const Page = () => {
             </span>
           )}
         </nav>
-        <div className="flex w-full h-full p-10">
-          <div className="w-1/4 text-white h-[60vh]">
-            <h2 className="text-xl font-semibold ">Add Task</h2>
+        <div className="flex w-full h-full p-10 gap-5">
+          <div className="w-1/4 text-white h-[75vh] ">
+            <h2 className="text-xl font-semibold text-center border-gray-50 border-2">Add Task</h2>
+              
           </div>
-          <div className="w-3/4 h-[60vh]">
+          <div className="w-3/4 h-[75vh]">
             <Timetable />
           </div>
         </div>

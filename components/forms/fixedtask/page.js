@@ -2,14 +2,15 @@
 // object : Event title , start time and end time
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import React from "react";
+import { useDispatch} from "react-redux";
+import { increment } from "@/redux/formcounter/counter";
 export default function FixedTaskForm() {
   const [eventTitle, setEventTitle] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [events, setEvents] = useState([]);
-  const router = useRouter();
-
+  const dispatch = useDispatch()
   const handleAddEvent = (e) => {
     e.preventDefault();
     if (!eventTitle || !startTime || !endTime) return;
@@ -35,15 +36,17 @@ export default function FixedTaskForm() {
 
   const handleNext = () => {
     console.log("Submitting events:", events);
-    router.push("/forms/not-fixed"); // Navigate to the next step
+    // Dispatch increment action to move to the next form
+    dispatch(increment());
   };
 
   return (
-    <main className="h-[70vh] bg-white text-black flex flex-col gap-2">
-      <h2 className="text-center bg-amber-300 p-5 text-xl font-semibold">
+    <main className="h-[70vh] flex flex-col gap-2">
+      {/* Header for Fixed Task Form */}
+      <h2 className="text-center bg-amber-300 p-5 text-xl font-semibold text-black">
         Step-1 Add your fixed task
       </h2>
-
+      {/* Form for Adding Fixed Tasks */}
       <form
         onSubmit={handleAddEvent}
         className="flex flex-col items-center gap-2"
@@ -107,7 +110,7 @@ export default function FixedTaskForm() {
             </ul>
           </div>
         </div>
-
+        {/* Navigation Buttons */}
         <button
           type="button"
           onClick={handleNext}

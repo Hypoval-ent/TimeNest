@@ -5,7 +5,8 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Timetable from "@/app/timetable/Timetable";
-import FixedTaskForm from "../forms/fixedtask/page";
+import Formwrapper from "@/components/Formwrapper";
+import FixedTaskForm from "@/components/forms/fixedtask/page";
 const Page = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -50,7 +51,7 @@ const Page = () => {
         <div className="flex w-full h-full p-10 gap-5">
           <div className="w-1/4 text-white h-[75vh] ">
             <h2 className="text-xl font-semibold text-center border-gray-500 border-2 mb-1.5">Create Your Schedule</h2>
-              <FixedTaskForm />
+              <Formwrapper />
           </div>
           <div className="w-3/4 h-[75vh]">
             <Timetable />

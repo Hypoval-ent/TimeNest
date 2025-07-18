@@ -17,7 +17,7 @@ const Page = () => {
   }, [status, session, router]);
   return (
     <>
-      <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-16 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]">
+      <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-10 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]">
         <nav className="flex justify-around">
           <span className="text-white text-5xl">TimeNest</span>
 
@@ -49,11 +49,11 @@ const Page = () => {
           )}
         </nav>
         <div className="flex w-full h-full p-10 gap-5">
-          <div className="w-1/4 text-white h-[75vh] ">
-            <h2 className="text-xl font-semibold text-center border-gray-500 border-2 mb-1.5">Create Your Schedule</h2>
+          <div className="w-1/4 text-white h-[80vh] ">
+            <h2 className="text-xl font-semibold text-center mb-1.5">Create Your Schedule</h2>
               <Formwrapper />
           </div>
-          <div className="w-3/4 h-[75vh]">
+          <div className="w-3/4 h-[80vh]">
             <Timetable />
           </div>
         </div>

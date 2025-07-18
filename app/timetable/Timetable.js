@@ -115,7 +115,7 @@ const Timetable = () => {
           {/* Timegrid */}
           <div className="col-span-10">
             <FullCalendar
-              height={"75vh"}
+              height={"80vh"}
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
               headerToolbar={{
                 left: "prev,next today",

@@ -10,30 +10,8 @@ const Formwrapper = () => {
 
   return (
     <>
-      <div className="mx-4 p-4">
+      <div className="mx-auto p-1">
         <div className="flex items-center">
-          <div className="flex items-center text-teal-600 relative">
-            <div className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-teal-600">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="100%"
-                height="100%"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                className="feather feather-bookmark "
-              >
-                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-              </svg>
-            </div>
-            <div className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-teal-600">
-              Personal
-            </div>
-          </div>
-          <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-teal-600"></div>
           <div className="flex items-center text-white relative">
             <div className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 bg-teal-600 border-teal-600">
               <svg
@@ -43,9 +21,9 @@ const Formwrapper = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="feather feather-user-plus "
               >
                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -55,7 +33,7 @@ const Formwrapper = () => {
               </svg>
             </div>
             <div className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-teal-600">
-              Account
+              Step-1
             </div>
           </div>
           <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
@@ -68,9 +46,9 @@ const Formwrapper = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="feather feather-mail "
               >
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -78,7 +56,7 @@ const Formwrapper = () => {
               </svg>
             </div>
             <div className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-gray-500">
-              Message
+              Step-2
             </div>
           </div>
           <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
@@ -91,9 +69,9 @@ const Formwrapper = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="feather feather-database "
               >
                 <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
@@ -102,7 +80,7 @@ const Formwrapper = () => {
               </svg>
             </div>
             <div className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-gray-500">
-              Confirm
+              Step-3
             </div>
           </div>
         </div>

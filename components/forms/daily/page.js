@@ -8,13 +8,45 @@ import {
   setDailyTask,
   deleteDailyTask,
   setAllDailyTasks,
+  setAllFixedTasks,
+  setAllMustDoTasks,
 } from "@/redux/tasks/task";
 import { decrement } from "@/redux/formcounter/counter";
+import { setGeneratedEvents } from "@/redux/calendar/calendar";
+import { generateSchedule } from "@/lib/useGeminischedule";
+import { buildPrompt } from "@/lib/propmtbuilder";
 
 const DailyTaskForm = () => {
   const dispatch = useDispatch();
   const dailyTasks = useSelector((state) => state.tasks.dailyTasks);
+  const fixedTasks = useSelector((state) => state.tasks.fixedTasks);
+  const mustDoTasks = useSelector((state) => state.tasks.mustDoTasks);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const stored = localStorage.getItem("fixedTasks");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        dispatch(setAllFixedTasks(parsed));
+      } catch (e) {
+        console.error("Invalid fixedTasks in localStorage");
+      }
+    }
+    setIsInitialized(true);
+  }, [dispatch]);
+  useEffect(() => {
+    const stored = localStorage.getItem("mustDoTasks");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        dispatch(setAllMustDoTasks(parsed));
+      } catch (e) {
+        console.error("Invalid mustDoTasks in localStorage");
+      }
+    }
+    setIsInitialized(true);
+  }, [dispatch]);
   useEffect(() => {
     const stored = localStorage.getItem("dailyTasks");
     if (stored) {
@@ -40,6 +72,7 @@ const DailyTaskForm = () => {
   } = useForm({
     resolver: zodResolver(dailyTaskSchema),
   });
+
   const handleAddEvent = (data) => {
     const newEvent = {
       title: data.title,
@@ -54,7 +87,43 @@ const DailyTaskForm = () => {
   const handleBack = () => {
     dispatch(decrement());
   };
+  const handleGenerate = async () => {
+    setLoading(true);
 
+    // Cleaner function to strip Markdown wrapping
+    const cleanGeminiJsonOutput = (text) => {
+      if (!text || typeof text !== "string") return null;
+
+      return text
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+    };
+
+    try {
+      const prompt = buildPrompt(fixedTasks, mustDoTasks, dailyTasks);
+      const geminiResponse = await generateSchedule(prompt);
+      const cleaned = cleanGeminiJsonOutput(geminiResponse);
+      if (!cleaned) {
+        throw new Error("Gemini response is empty or invalid");
+      }
+      let parsedEvents;
+      try {
+        parsedEvents = JSON.parse(cleaned);
+      } catch (err) {
+        console.error("❌ JSON.parse failed:", err);
+        console.warn("💥 Cleaned Response Was:", cleaned);
+        throw new Error("Failed to parse Gemini output. Check format.");
+      }
+      dispatch(setGeneratedEvents(parsedEvents));
+      alert("✅ Schedule generated!");
+    } catch (error) {
+      console.error("❌ Schedule generation error:", error);
+      alert("⚠️ Schedule generation failed. See console.");
+    }
+
+    setLoading(false);
+  };
   return (
     <main className=" text-white flex flex-col  mt-7">
       <h2 className="text-center text-lg font-semibold">
@@ -165,6 +234,7 @@ const DailyTaskForm = () => {
         </button>
         <div className="flex-auto flex flex-row-reverse">
           <button
+            onClick={handleGenerate}
             className="text-base  ml-2  hover:scale-110 focus:outline-none flex justify-center px-4 py-2 rounded font-bold cursor-pointer 
                  hover:bg-teal-600  
                  bg-teal-600 
@@ -172,7 +242,7 @@ const DailyTaskForm = () => {
                 border duration-200 ease-in-out 
                  border-teal-600 transition"
           >
-            Generate
+            {loading ? "Generating..." : "Generate"}
           </button>
         </div>
       </div>

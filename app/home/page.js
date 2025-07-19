@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Timetable from "@/app/timetable/Timetable";
 import Formwrapper from "@/components/Formwrapper";
-import FixedTaskForm from "@/components/forms/fixedtask/page";
 const Page = () => {
   const { data: session, status } = useSession();
   const router = useRouter();

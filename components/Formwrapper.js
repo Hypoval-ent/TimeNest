@@ -62,7 +62,7 @@ const Formwrapper = () => {
             </div>
             <div
               className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
-                count >= 1 ? "text-teal-600" : "text-gray-500"
+                count >= 0 ? "text-teal-600" : "text-gray-500"
               }`}
             >
               Step-1
@@ -71,7 +71,7 @@ const Formwrapper = () => {
 
           <div
             className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
-              count > 1 ? "border-teal-600" : "border-gray-300"
+              count > 0 ? "border-teal-600" : "border-gray-300"
             }`}
           ></div>
 
@@ -98,7 +98,7 @@ const Formwrapper = () => {
             </div>
             <div
               className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
-                count >= 2 ? "text-teal-600" : "text-gray-500"
+                count >= 1 ? "text-teal-600" : "text-gray-500"
               }`}
             >
               Step-2
@@ -107,7 +107,7 @@ const Formwrapper = () => {
 
           <div
             className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
-              count > 2 ? "border-teal-600" : "border-gray-300"
+              count > 1 ? "border-teal-600" : "border-gray-300"
             }`}
           ></div>
 
@@ -135,7 +135,7 @@ const Formwrapper = () => {
             </div>
             <div
               className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
-                count >= 3 ? "text-teal-600" : "text-gray-500"
+                count >= 2 ? "text-teal-600" : "text-gray-500"
               }`}
             >
               Step-3

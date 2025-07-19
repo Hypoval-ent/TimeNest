@@ -15,10 +15,10 @@ export const fixedTaskSchema = z
     path: ["endTime"],
   });
 
-// ✅ Must-Do Task Schema
-export const mustDoTaskSchema = z.object({
+// ✅ Not-Fixed Task Schema
+export const notFixedTaskSchema = z.object({
   title: z.string().min(1, "Task title is required"),
-  minTime: z.number().min(1, "Minimum time must be at least 1 minute"),
+  minTime: z.coerce.number().min(1, "Minimum time must be at least 1 minute"),
 });
 
 // ✅ Daily Task Schema

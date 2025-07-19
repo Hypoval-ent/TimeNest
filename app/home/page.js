@@ -48,12 +48,12 @@ const Page = () => {
             </span>
           )}
         </nav>
-        <div className="flex w-full h-full p-10 gap-5">
-          <div className="w-1/4 text-white h-[80vh] ">
+        <div className="flex w-full h-full pt-5 gap-5">
+          <div className="w-1/4 text-white">
             <h2 className="text-xl font-semibold text-center mb-1.5">Create Your Schedule</h2>
               <Formwrapper />
           </div>
-          <div className="w-3/4 h-[80vh]">
+          <div className="w-3/4">
             <Timetable />
           </div>
         </div>

@@ -23,7 +23,7 @@ export default function FixedTaskForm() {
     resolver: zodResolver(fixedTaskSchema),
   });
   const handleAddEvent = (data) => {
-    const newEvent = { // Unique ID
+    const newEvent = { 
       title: data.title,
       startTime: data.startTime,
       endTime: data.endTime,
@@ -150,16 +150,16 @@ export default function FixedTaskForm() {
             </div>
           </form>
           <h6 className="text-xl p-2 mb-1">
-            -------------- Your Events -----------
+            ------------ Your Events -----------
           </h6>
           <div className="h-[26vh] overflow-y-auto [scrollbar-gutter:stable]">
             <ul className="space-y-2 text-black">
               {[...fixedTasks]
-                .sort((a, b) => a.start.localeCompare(b.start))
+                .sort((a, b) => a.startTime.localeCompare(b.startTime))
                 .map((event) => (
                   <li
                     key={event.title}
-                    className="border border-gray-300 py-2 rounded bg-gray-100 flex justify-around items-center px-2"
+                    className="border border-gray-300 py-2 rounded bg-gray-100 flex justify-around items-center px-2 mx-2"
                   >
                     <span className="font-semibold w-1/3 text-center">
                       {event.title}

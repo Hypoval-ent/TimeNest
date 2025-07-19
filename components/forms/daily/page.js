@@ -1,63 +1,183 @@
 "use client";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { increment, decrement } from "@/redux/formcounter/counter";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { dailyTaskSchema } from "../schema";
+import {
+  setDailyTask,
+  deleteDailyTask,
+  setAllDailyTasks,
+} from "@/redux/tasks/task";
+import { decrement } from "@/redux/formcounter/counter";
 
-const Daily = () => {
+const DailyTaskForm = () => {
   const dispatch = useDispatch();
-  const [eventTitle, setEventTitle] = useState("");
-  const [afterTime, setAfterTime] = useState("");
-
-  const handleNext = () => {
-    // Add validation or save logic here if needed
-    dispatch(increment());
+  const dailyTasks = useSelector((state) => state.tasks.dailyTasks);
+  const [isInitialized, setIsInitialized] = useState(false);
+  useEffect(() => {
+    const stored = localStorage.getItem("dailyTasks");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        dispatch(setAllDailyTasks(parsed));
+      } catch (e) {
+        console.error("Invalid dailyTasks in localStorage");
+      }
+    }
+    setIsInitialized(true);
+  }, [dispatch]);
+  useEffect(() => {
+    if (isInitialized) {
+      localStorage.setItem("dailyTasks", JSON.stringify(dailyTasks));
+    }
+  }, [dailyTasks, isInitialized]);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(dailyTaskSchema),
+  });
+  const handleAddEvent = (data) => {
+    const newEvent = {
+      title: data.title,
+      afterTime: data.afterTime,
+    };
+    dispatch(setDailyTask(newEvent));
+    reset();
   };
-
+  const handleDelete = (title) => {
+    dispatch(deleteDailyTask(title));
+  };
   const handleBack = () => {
     dispatch(decrement());
   };
 
   return (
-    <main className="h-[70vh] bg-white text-black flex flex-col gap-2">
-      <h2 className="text-center bg-amber-300 p-5 text-xl font-semibold">
-        Step-3 Add your daily task
+    <main className=" text-white flex flex-col  mt-7">
+      <h2 className="text-center text-lg font-semibold">
+        Step-3 Add your daily tasks
       </h2>
-      <form className="flex flex-col items-center gap-2">
-        <div className="h-[50vh] border-2 border-gray-300 w-[90%] p-5 flex flex-col gap-4 justify-center items-center">
-          <input
-            type="text"
-            placeholder="Event Title"
-            value={eventTitle}
-            onChange={(e) => setEventTitle(e.target.value)}
-            className="border border-gray-400 rounded px-3 py-2 w-full sm:w-1/3"
-          />
-          <input
-            type="time"
-            placeholder="After Time"
-            value={afterTime}
-            onChange={(e) => setAfterTime(e.target.value)}
-            className="border border-gray-400 rounded px-3 py-2 w-full sm:w-1/3"
-          />
+      <form onSubmit={handleSubmit(handleAddEvent)}>
+        <div className="flex flex-col md:flex-row">
+          <div className="w-full flex-1 mx-2 svelte-1l8159u">
+            <div className="bg-white my-2 p-1 flex border border-gray-200 rounded svelte-1l8159u">
+              <input
+                type="text"
+                {...register("title")}
+                placeholder="Event Title"
+                className="p-1 appearance-none outline-none w-full text-gray-800"
+              />
+              {errors.title && (
+                <p className="text-red-600 ml-2">{errors.title.message}</p>
+              )}
+            </div>
+          </div>
         </div>
-        <div className="flex gap-4 w-1/3">
+        <div className="flex flex-col md:flex-row ">
+          <div className="w-1/2 flex-1 mx-2 ">
+            <label
+              htmlFor="start-time"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              After (any point of day)
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+                <svg
+                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <input
+                type="time"
+                {...register("afterTime")}
+                id="start-time"
+                className="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required
+              />
+            </div>
+            {errors.afterTime && (
+              <p className="text-red-600 ml-2 mt-1">
+                {errors.afterTime.message}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="p-2">
           <button
-            type="button"
-            onClick={handleBack}
-            className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-2xl w-1/2 p-2"
+            type="submit"
+            className="bg-blue-600 text-white  rounded w-full block  px-4 py-2 "
           >
-            Back
-          </button>
-          <button
-            type="button"
-            onClick={handleNext}
-            className="text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-2xl w-1/2 p-2"
-          >
-            Next
+            Add
           </button>
         </div>
       </form>
+      <div className="flex items-center mx-2 mb-2">
+        <div className="flex-grow h-px bg-gray-300"></div>
+        <span className="px-3 text-xl">Your Events</span>
+        <div className="flex-grow h-px bg-gray-300"></div>
+      </div>
+      <div className="h-[26vh] overflow-y-auto [scrollbar-gutter:stable]">
+        <ul className="space-y-2 text-black">
+          {[...dailyTasks].map((event) => (
+            <li
+              key={event.title}
+              className="border border-gray-300 py-2 rounded bg-gray-100 flex justify-around items-center px-2 mx-2"
+            >
+              <span className="font-semibold w-1/3 text-center">
+                {event.title}
+              </span>
+              <span className="w-1/3 text-center">{event.afterTime}</span>
+              <button
+                onClick={() => handleDelete(event.title)}
+                className="text-red-600 hover:text-red-800 font-semibold w-1/3 text-center"
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {/* Display Generate and next buttons */}
+      <div className="flex p-2 mt-4">
+        <button
+          onClick={handleBack}
+          className="text-base hover:scale-110 focus:outline-none flex justify-center px-4 py-2 rounded font-bold cursor-pointer 
+                 hover:bg-gray-200  
+                 bg-gray-100 
+                 text-gray-700 
+                  border duration-200 ease-in-out 
+                 border-gray-600 transition"
+        >
+          Previous
+        </button>
+        <div className="flex-auto flex flex-row-reverse">
+          <button
+            className="text-base  ml-2  hover:scale-110 focus:outline-none flex justify-center px-4 py-2 rounded font-bold cursor-pointer 
+                 hover:bg-teal-600  
+                 bg-teal-600 
+                 text-teal-100 
+                border duration-200 ease-in-out 
+                 border-teal-600 transition"
+          >
+            Generate
+          </button>
+        </div>
+      </div>
     </main>
   );
 };
 
-export default Daily;
+export default DailyTaskForm;

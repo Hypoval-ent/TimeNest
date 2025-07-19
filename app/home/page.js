@@ -5,6 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Timetable from "@/app/timetable/Timetable";
+import Rough from "../timetable/rough";
 import Formwrapper from "@/components/Formwrapper";
 const Page = () => {
   const { data: session, status } = useSession();
@@ -53,7 +54,7 @@ const Page = () => {
               <Formwrapper />
           </div>
           <div className="w-3/4">
-            <Timetable />
+            <Rough/>
           </div>
         </div>
       </div>

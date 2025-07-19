@@ -3,21 +3,19 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Transition, Dialog } from "@headlessui/react";
 import {
   ExclamationTriangleIcon,
   CheckIcon,
 } from "@heroicons/react/24/outline";
-import { useSelector } from "react-redux";
 
-const Timetable = () => {
-  const [events, setEvents] = useState([
-    { id: 1, title: "Event 1" },
-    { id: 2, title: "Event 2" },
-    { id: 3, title: "Event 3" },
-  ]);
+const Rough = () => {
+  const generatedEvents = useSelector(
+    (state) => state.events.generatedEvents
+  );
+
   const [allEvents, setAllEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -29,6 +27,28 @@ const Timetable = () => {
     id: 0,
   });
 
+  // Load generatedEvents into calendar
+  useEffect(() => {
+    if (generatedEvents && generatedEvents.length > 0) {
+      const today = new Date().toISOString().split("T")[0];
+
+      const formatted = generatedEvents.map((event) => ({
+        ...event,
+        start: `${today}T${event.start}`,
+        end: `${today}T${event.end}`,
+        allDay: false,
+        id: `${Date.now()}-${Math.random()}`,
+        generated: true,
+      }));
+
+      // Remove old generated events first
+      setAllEvents((prev) =>
+        prev.filter((e) => !e.generated).concat(formatted)
+      );
+    }
+  }, [generatedEvents]);
+
+  // Drag-and-drop external
   useEffect(() => {
     let draggableEl = document.getElementById("draggable-events");
     if (draggableEl) {
@@ -38,24 +58,22 @@ const Timetable = () => {
           let title = eventEl.getAttribute("title");
           let id = eventEl.getAttribute("data-id");
           let start = eventEl.getAttribute("data-start");
-          return {
-            title,
-            id,
-            start,
-          };
+          return { title, id, start };
         },
       });
     }
   }, []);
+
   function handleDateClick(arg) {
     setNewEvent({
       ...newEvent,
       start: arg.date,
       allDay: arg.allDay,
-      id: new Date().getTime(), // Unique ID based on current time
+      id: new Date().getTime(),
     });
     setShowModal(true);
   }
+
   function addEvent(data) {
     const event = {
       ...newEvent,
@@ -66,40 +84,44 @@ const Timetable = () => {
     };
     setAllEvents([...allEvents, event]);
   }
+
   function handleDeleteModal(data) {
     setShowDeleteModal(true);
     setIdToDelete(data.event.id);
   }
+
   function handleDelete() {
-    setAllEvents(
-      allEvents.filter((event) => String(event.id) !== String(idToDelete))
-    );
+    setAllEvents(allEvents.filter((e) => String(e.id) !== String(idToDelete)));
     setShowDeleteModal(false);
     setIdToDelete(null);
   }
+
   function handleCloseModal() {
     setNewEvent({ title: "", start: "", allDay: false, id: 0 });
     setShowDeleteModal(false);
     setIdToDelete(null);
   }
+
   function handleChange(e) {
     setNewEvent({ ...newEvent, title: e.target.value });
   }
+
   function handleSubmit(e) {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     setAllEvents([...allEvents, newEvent]);
     setShowModal(false);
     setNewEvent({ title: "", start: "", allDay: false, id: 0 });
   }
+
   function closeAddEventModal() {
     setNewEvent({ title: "", start: "", allDay: false, id: 0 });
     setShowModal(false);
   }
+
   return (
     <>
-      <main className="text-white" >
+      <main className="text-white">
         <div className="grid grid-cols-10">
-          {/* Timegrid */}
           <div className="col-span-10">
             <FullCalendar
               height={"83vh"}
@@ -117,12 +139,13 @@ const Timetable = () => {
               selectable={true}
               selectMirror={true}
               dateClick={handleDateClick}
-              drop={(data) => addEvent(data)}
-              eventClick={(data) => handleDeleteModal(data)}
+              drop={addEvent}
+              eventClick={handleDeleteModal}
             />
           </div>
         </div>
 
+        {/* Delete Modal */}
         <Transition show={showDeleteModal} as={React.Fragment}>
           <Dialog
             as="div"
@@ -151,39 +174,37 @@ const Timetable = () => {
                   leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                   leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
-                  <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                  <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                     <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
                         <ExclamationTriangleIcon
                           className="h-6 w-6 text-red-600"
                           aria-hidden="true"
                         />
                       </div>
-                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                      <div className="mt-3 text-center sm:text-left">
                         <Dialog.Title
                           as="h3"
                           className="text-base font-semibold leading-6 text-gray-900"
                         >
                           Delete Event
                         </Dialog.Title>
-                        <div className="mt-2">
-                          <p className="text-sm text-gray-500">
-                            Are you sure you want to delete this event?
-                          </p>
-                        </div>
+                        <p className="text-sm text-gray-500 mt-2">
+                          Are you sure you want to delete this event?
+                        </p>
                       </div>
                     </div>
-                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse">
                       <button
                         type="button"
-                        className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                        className="inline-flex justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
                         onClick={handleDelete}
                       >
                         Delete
                       </button>
                       <button
                         type="button"
-                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                        className="mt-3 inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50"
                         onClick={handleCloseModal}
                       >
                         Cancel
@@ -196,12 +217,9 @@ const Timetable = () => {
           </Dialog>
         </Transition>
 
+        {/* Add Event Modal */}
         <Transition show={showModal} as={React.Fragment}>
-          <Dialog
-            as="div"
-            className="relative z-10"
-            onClose={() => setShowModal(false)}
-          >
+          <Dialog as="div" className="relative z-10" onClose={closeAddEventModal}>
             <Transition.Child
               as={React.Fragment}
               enter="ease-out duration-300"
@@ -224,44 +242,41 @@ const Timetable = () => {
                   leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                   leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
-                  <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                  <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div className="bg-white px-4 pt-5 pb-4">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
                         <CheckIcon
                           className="h-6 w-6 text-red-600"
                           aria-hidden="true"
                         />
                       </div>
-                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                      <div className="mt-3 text-center sm:text-left">
                         <Dialog.Title
                           as="h3"
                           className="text-base font-semibold leading-6 text-gray-900"
                         >
                           Add Event
                         </Dialog.Title>
-
-                        <form action="submit" onSubmit={handleSubmit}>
-                          <div className="mt-2">
-                            <input
-                              type="text"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:text-sm sm:lading-6"
-                              placeholder="Event Title"
-                              value={newEvent.title}
-                              onChange={(e) => handleChange(e)}
-                            />
-                          </div>
-                          <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                        <form onSubmit={handleSubmit}>
+                          <input
+                            type="text"
+                            placeholder="Event Title"
+                            value={newEvent.title}
+                            onChange={handleChange}
+                            className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2"
+                          />
+                          <div className="mt-4 flex justify-end space-x-2">
                             <button
                               type="submit"
-                              className="inline-flex w-full justify-center rounded-md bg-violet-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-violet-500 sm:col-start-2 sm:w-auto"
-                              disabled={newEvent.title === ""}
+                              className="bg-violet-600 text-white px-4 py-2 rounded hover:bg-violet-500 disabled:opacity-50"
+                              disabled={!newEvent.title}
                             >
                               Create
                             </button>
                             <button
                               type="button"
-                              className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                               onClick={closeAddEventModal}
+                              className="bg-white text-gray-700 px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
                             >
                               Cancel
                             </button>
@@ -280,4 +295,4 @@ const Timetable = () => {
   );
 };
 
-export default Timetable;
+export default Rough;

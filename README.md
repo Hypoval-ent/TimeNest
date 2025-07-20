@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🗓️ Daily Schedule Optimizer
 
-## Getting Started
+A productivity-focused web application that helps users automatically generate an optimized daily schedule based on their fixed timetable, must-do tasks, and flexible daily todos — removing the need for manual planning and maximizing daily efficiency.
 
-First, run the development server:
+## 🚀 Features
+
+- 📆 Input structured tasks across three categories: Fixed Timetable, Must-Do Tasks, Daily Todos
+- 🤖 AI-powered schedule generation using **Gemini API**
+- 📅 Visualized schedules with **FullCalendar** in a dynamic, drag-and-drop interface
+- 🔐 Secure authentication using **NextAuth** with Google OAuth
+- 💾 Redux-based state management for persistent and consistent task data
+- 📱 Fully responsive design using **Tailwind CSS**
+
+## 🛠️ Tech Stack
+
+- **Frontend:** Next.js, React, Tailwind CSS
+- **Backend:** Node.js, Express.js
+- **Authentication:** NextAuth (Google OAuth)
+- **Calendar:** FullCalendar (with day/time views)
+- **State Management:** Redux Toolkit
+- **AI Scheduling:** Gemini 1.5 Flash API
+- **Database:** MongoDB (via Mongoose)
+
+## 📸 Demo
+
+> _Insert a screenshot or Loom video link here to show the flow from task input to generated schedule._
+
+## 🧠 How It Works
+
+1. Users log in securely with Google OAuth.
+2. They input:
+   - **Fixed Timetable:** Non-flexible commitments (e.g., classes, meetings)
+   - **Must-Do Tasks:** Tasks that must be done today
+   - **Daily Todos:** Optional or flexible tasks
+3. All inputs are combined and sent to the **Gemini API**, which returns a time-optimized schedule.
+4. The schedule is rendered with **FullCalendar** in 24-hour format, reflecting time blocks intelligently.
+
+## 🧪 Installation
 
 ```bash
+git clone https://github.com/your-username/daily-schedule-optimizer.git
+cd daily-schedule-optimizer
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create a `.env.local` file in the root:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```env
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+MONGODB_URI=your_mongodb_connection_string
+GEMINI_API_KEY=your_gemini_api_key
+NEXTAUTH_SECRET=your_nextauth_secret
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Future Improvements
 
-## Learn More
+- User history and saved schedules
+- Priority tagging and task dependencies
+- Weekly/monthly planning support
+- Drag-and-reschedule with auto-updates
 
-To learn more about Next.js, take a look at the following resources:
+## 📄 License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This project is open-source and available under the [MIT License](LICENSE).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Made with ❤️ using MERN + Next.js + Gemini AI**
